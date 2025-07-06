@@ -100,7 +100,7 @@ class IssueList(Resource):
                 socketio.emit(
                     "new_issue",
                     IssueRead.model_validate(issue).model_dump(),
-                    room=f"user_{users.user_id}",
+                    room=f"user_{users.id}",
                 )
 
             return IssueRead.model_validate(issue).model_dump(), 201
@@ -120,17 +120,17 @@ class IssueList(Resource):
         }
     }
 )
-@IssuesApiNs.param("id", "Issue identifier")
+@IssuesApiNs.param("id", "IssueIdentifier")
 class IssueResource(Resource):
     @IssuesApiNs.marshal_with(issue_response_model)
-    def get(self, id):
+    def get(self, issue_id):
         """Get issue by ID"""
         user_id = request.headers.get("X-User-ID", None)
         if user_id is None:
             return {"errors": "Not Authorized"}, 401
 
-        if has_read_permission(user_id, id, "read"):
-            issue = Issue.query.get_or_404(id)
+        if has_read_permission(user_id, issue_id, "read"):
+            issue = Issue.query.get_or_404(issue_id)
             return IssueRead.model_validate(issue).model_dump()
         else:
             return {"errors": "Not Authorized"}, 401
@@ -147,13 +147,13 @@ class IssueResource(Resource):
         }
     )
     @IssuesApiNs.marshal_with(issue_response_model)
-    def put(self, id):
+    def put(self, issue_id):
         """Update issue by ID"""
         user_id = request.headers.get("X-User-ID", None)
         if not user_id:
             return {"msg": "Unauthorised"}, 401
-        issue = Issue.query.get_or_404(id)
-        if has_edit_permissions(user_id=user_id, issue_id=id):
+        issue = Issue.query.get_or_404(issue_id)
+        if has_edit_permissions(user_id=user_id, issue_id=issue_id):
             try:
                 payload = IssuePut.model_validate(request.json)
                 issue.status = payload.status
@@ -166,7 +166,7 @@ class IssueResource(Resource):
                     socketio.emit(
                         "new_issue",
                         IssueRead.model_validate(issue).model_dump(),
-                        room=f"user_{users.user_id}",
+                        room=f"user_{users.id}",
                     )
 
                 return IssueRead.model_validate(issue).model_dump()
@@ -174,13 +174,9 @@ class IssueResource(Resource):
                 print(e)
                 return {"errors": e.errors()}, 500
 
-    def delete(self, id):
+    def delete(self):
         """Delete issue by ID"""
         return {"message": "Forbidden"}, 405
-        issue = Issue.query.get_or_404(id)
-        db.session.delete(issue)
-        db.session.commit()
-        return {"message": f"Issue {id} deleted"}, 204
 
 
 def has_read_permission(user_id, issue_id, action="read"):
