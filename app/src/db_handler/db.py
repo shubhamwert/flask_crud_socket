@@ -1,5 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
-db=SQLAlchemy()
+
+db = SQLAlchemy()
+
+
 def add_item_to_table(table_name: str, db, item: dict):
     """
     Generic helper to add a row to a given SQLAlchemy table.
@@ -11,7 +14,7 @@ def add_item_to_table(table_name: str, db, item: dict):
     """
     # Get the model class from the table name
     model_class = db.Model._decl_class_registry.get(table_name)
-    
+
     if model_class is None:
         raise ValueError(f"Table '{table_name}' not found in SQLAlchemy models.")
 

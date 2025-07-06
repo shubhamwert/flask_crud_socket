@@ -1,24 +1,28 @@
-from flask_restx import Namespace, Resource, fields
 from flask import request
-from src.models.models import db, IssuePermission
-from src.schema.schema import IssuePermissionCreate, IssuePermissionRead
+from flask_restx import Namespace, Resource, fields
 from pydantic import ValidationError
 
-ns_perm = Namespace('permissions', description='Manage issue permissions')
+from src.models.models import IssuePermission, db
+from src.schema.schema import IssuePermissionCreate, IssuePermissionRead
+
+ns_perm = Namespace("permissions", description="Manage issue permissions")
 
 # Swagger model
-permission_model = ns_perm.model('IssuePermission', {
-    'user_id': fields.Integer(required=True),
-    'issue_id': fields.Integer(required=True),
-    'role': fields.String(enum=['read', 'write', 'admin'], required=True)
-})
+permission_model = ns_perm.model(
+    "IssuePermission",
+    {
+        "user_id": fields.Integer(required=True),
+        "issue_id": fields.Integer(required=True),
+        "role": fields.String(enum=["read", "write", "admin"], required=True),
+    },
+)
 
-permission_response = ns_perm.inherit('PermissionResponse', permission_model, {
-    'id': fields.Integer()
-})
+permission_response = ns_perm.inherit(
+    "PermissionResponse", permission_model, {"id": fields.Integer()}
+)
 
 
-@ns_perm.route('')
+@ns_perm.route("")
 class PermissionList(Resource):
     @ns_perm.marshal_list_with(permission_response)
     def get(self):
@@ -40,8 +44,8 @@ class PermissionList(Resource):
             return {"errors": e.errors()}, 400
 
 
-@ns_perm.route('/<int:id>')
-@ns_perm.param('id', 'Permission ID')
+@ns_perm.route("/<int:id>")
+@ns_perm.param("id", "Permission ID")
 class PermissionResource(Resource):
     @ns_perm.expect(permission_model)
     @ns_perm.marshal_with(permission_response)

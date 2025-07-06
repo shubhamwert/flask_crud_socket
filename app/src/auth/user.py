@@ -2,13 +2,15 @@
 from flask import request
 from flask_restx import Namespace, Resource
 from pydantic import ValidationError
-from src.models.models import User
-from src.dbHandler.db import db
-from src.schema.schema import UserCreate, UserLogin, UserRead
-import json
-AuthApiNs = Namespace('users', description='User operations')
 
-@AuthApiNs.route('/register')
+from src.dbHandler.db import db
+from src.models.models import User
+from src.schema.schema import UserCreate, UserLogin, UserRead
+
+AuthApiNs = Namespace("users", description="User operations")
+
+
+@AuthApiNs.route("/register")
 class UserRegister(Resource):
     def post(self):
         try:
@@ -21,13 +23,14 @@ class UserRegister(Resource):
 
         user = User(username=data.username)
         user.set_password(data.password)
-        user.role='read'
+        user.role = "read"
         db.session.add(user)
         db.session.commit()
 
         return {"message": "User registered successfully."}, 201
 
-@AuthApiNs.route('/login')
+
+@AuthApiNs.route("/login")
 class UserLoginRoute(Resource):
     def post(self):
         try:
@@ -38,8 +41,11 @@ class UserLoginRoute(Resource):
         user = User.query.filter_by(username=data.username).first()
         print(user)
         if user and user.check_password(data.password):
-            user=UserRead.model_validate(user)
-            print("################",user)
-            return {"message": "Login successful.","metdata":user.model_dump(mode='json')}, 200
+            user = UserRead.model_validate(user)
+            print("################", user)
+            return {
+                "message": "Login successful.",
+                "metdata": user.model_dump(mode="json"),
+            }, 200
 
         return {"message": "Invalid username or password."}, 401
