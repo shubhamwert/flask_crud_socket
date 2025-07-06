@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: flaskuser
+      POSTGRES_PASSWORD: flaskpass
+      POSTGRES_DB: flaskdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    network_mode: host
+  web:
+    network_mode: host
+    
+    build:
+      context: ./app/
+      dockerfile: Dockerfile
+      network: host
+      no_cache: true
+    depends_on:
+      - db
+    environment:
+      DB_USER: flaskuser
+      DB_PASSWORD: flaskpass
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: flaskdb
+      
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/app
+
+volumes:
+  pgdata:
