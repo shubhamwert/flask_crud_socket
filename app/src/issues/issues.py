@@ -178,7 +178,10 @@ class IssueResource(Resource):
         return {"message": "Forbidden"}, 405
 
 
-def has_read_permission(user_id, issue_id,):
+def has_read_permission(
+    user_id,
+    issue_id,
+):
     user = User.query.get(user_id)
     if not user:
         return False
