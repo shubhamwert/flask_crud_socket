@@ -4,7 +4,7 @@ from flask_restx import Api
 from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_TRACK_MODIFICATIONS
 from src.auth.rbac import ns_perm
 from src.auth.user import AuthApiNs
-from src.dbHandler.db import db
+from src.db_handler.db import db
 from src.issues.issues import IssuesApiNs
 from src.notification.notification import socketio
 

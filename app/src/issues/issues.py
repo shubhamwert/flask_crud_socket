@@ -2,7 +2,7 @@ from flask import jsonify, request
 from flask_restx import Namespace, Resource, fields
 from pydantic import ValidationError
 
-from src.dbHandler.db import db
+from src.db_handler.db import db
 from src.models.models import Issue, IssuePermission, User
 from src.notification.notification import socketio
 from src.schema.schema import IssueCreate, IssuePut, IssueRead

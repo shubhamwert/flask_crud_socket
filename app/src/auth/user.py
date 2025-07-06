@@ -3,7 +3,7 @@ from flask import request
 from flask_restx import Namespace, Resource
 from pydantic import ValidationError
 
-from src.dbHandler.db import db
+from src.db_handler.db import db
 from src.models.models import User
 from src.schema.schema import UserCreate, UserLogin, UserRead
 
