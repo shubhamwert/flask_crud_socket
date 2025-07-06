@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 import os
 
 DB_USER = os.getenv("DB_USER", "your_username")

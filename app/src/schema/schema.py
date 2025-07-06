@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, constr

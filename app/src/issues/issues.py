@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 from flask import jsonify, request
 from flask_restx import Namespace, Resource, fields
 from pydantic import ValidationError

@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.db_handler.db import db

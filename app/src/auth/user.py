@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 # app/routes/user_routes.py
 from flask import request
 from flask_restx import Namespace, Resource

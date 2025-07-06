@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 from flask import Flask
 from flask_restx import Api
 

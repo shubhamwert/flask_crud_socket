@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 from flask_socketio import SocketIO, disconnect, emit, join_room
 
 socketio = SocketIO(
