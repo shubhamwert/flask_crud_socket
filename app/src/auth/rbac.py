@@ -50,9 +50,9 @@ class PermissionList(Resource):
 class PermissionResource(Resource):
     @ns_perm.expect(permission_model)
     @ns_perm.marshal_with(permission_response)
-    def put(self, id):
+    def put(self, perm_id):
         """Update a permission (change role)"""
-        perm = IssuePermission.query.get_or_404(id)
+        perm = IssuePermission.query.get_or_404(perm_id)
         try:
             payload = IssuePermissionCreate.model_validate(request.json)
             for key, value in payload.model_dump().items():
@@ -62,9 +62,9 @@ class PermissionResource(Resource):
         except ValidationError as e:
             return {"errors": e.errors()}, 400
 
-    def delete(self, id):
+    def delete(self, perm_id):
         """Revoke issue access"""
-        perm = IssuePermission.query.get_or_404(id)
+        perm = IssuePermission.query.get_or_404(perm_id)
         db.session.delete(perm)
         db.session.commit()
         return {"message": "Permission deleted"}, 204

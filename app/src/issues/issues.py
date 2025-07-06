@@ -59,11 +59,10 @@ class IssueList(Resource):
         if user_id is None:
             return {"msg": "Unauthorized"}, 401
 
-        if has_read_permission(user_id, None, "read"):
+        if has_read_permission(user_id, None):
             issues = Issue.query.all()
             return [IssueRead.model_validate(i).model_dump() for i in issues]
-        else:
-            return {"msg": "Unauthorized"}, 401
+        return {"msg": "Unauthorized"}, 401
 
     @IssuesApiNs.expect(issue_model)
     @IssuesApiNs.marshal_with(issue_response_model, code=201)
@@ -130,11 +129,10 @@ class IssueResource(Resource):
         if user_id is None:
             return {"errors": "Not Authorized"}, 401
 
-        if has_read_permission(user_id, issue_id, "read"):
+        if has_read_permission(user_id, issue_id):
             issue = Issue.query.get_or_404(issue_id)
             return IssueRead.model_validate(issue).model_dump()
-        else:
-            return {"errors": "Not Authorized"}, 401
+        return {"errors": "Not Authorized"}, 401
 
     @IssuesApiNs.expect(issue_put_model)
     @IssuesApiNs.doc(
@@ -180,7 +178,7 @@ class IssueResource(Resource):
         return {"message": "Forbidden"}, 405
 
 
-def has_read_permission(user_id, issue_id, action="read"):
+def has_read_permission(user_id, issue_id,):
     user = User.query.get(user_id)
     if not user:
         return False
